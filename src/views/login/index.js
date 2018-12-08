@@ -1,11 +1,11 @@
-import '../../style.css'
-import axios from 'axios'
+import '../../style.css';
+import axios from 'axios';
 import AppBar from 'material-ui/AppBar';
 import React, { Component } from "react";
 import TextField from 'material-ui/TextField';
-import Loading from '../../components/loading'
+import Loading from '../../components/loading';
 import RaisedButton from 'material-ui/RaisedButton';
-import { storeToken, getToken } from '../../utils/storeTokens'
+import { storeToken, getToken } from '../../utils/tokenHandlers';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class Login extends Component {
@@ -27,22 +27,22 @@ class Login extends Component {
 
     async  handleClick(event) {
         this.setState({ isLoading: true })
+        const { username, password } = this.state;
         try {
-
             const response = await axios.post('http://localhost:8848/api/users/login', {
-                username: this.state.username,
-                password: this.state.password
+                username,
+                password
             });
 
-            const data = response.data;
+            const { status, message, refreshToken, accessToken } = response.data;
 
-            if (data.status === 200) {
-                if (data.message === "invalid password") {
+            if (status === 200) {
+                if (message === "invalid password") {
                     this.setState({ error: 'Wrong username or password', isLoading: false });
                 } else {
 
-                    storeToken(data.refreshToken, 'refreshToken');
-                    storeToken(data.accessToken, 'accessToken');
+                    storeToken(refreshToken, 'refreshToken');
+                    storeToken(accessToken, 'accessToken');
 
                     this.props.history.push('/todos');
                 }

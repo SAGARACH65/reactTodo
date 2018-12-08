@@ -1,5 +1,6 @@
 import React from 'react'
 import uuidv1 from 'uuid/v1';
+import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 
@@ -18,4 +19,7 @@ export default function AddTodo(props) {
     )
 }
 
+AddTodo.propTypes={
+    addTodo:PropTypes.func.isRequired
+}
 

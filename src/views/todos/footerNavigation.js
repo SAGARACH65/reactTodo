@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import DoneIcon from '@material-ui/icons/DoneAll';
 import FlipIcon from '@material-ui/icons/FlipToFront';
 import DescIcon from '@material-ui/icons/Description';
@@ -35,4 +36,7 @@ export default function footerNavigation(props) {
     )
 }
 
-
+footerNavigation.propTypes = {
+    currentTabHandler: PropTypes.func.isRequired,
+    
+  }
