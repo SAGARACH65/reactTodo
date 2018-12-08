@@ -1,0 +1,13 @@
+.footer {
+    position: absolute;
+    padding-top: 750px
+}
+
+.paper {
+    width: 700px;
+    margin-left: 550px;
+    position: relative;
+}
+.error{
+    color:red
+}
