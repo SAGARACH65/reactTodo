@@ -7,10 +7,10 @@ import { INCOMPLETE } from '../../constants/todoConstants'
 
 export default function AddTodo(props) {
     return (
-        <div style={{ marginLeft: 600 }}>
+        <div className='floating-button-container'>
             <button
-                className="floatingButton"
-                onClick={() => props.addTodo({ status: INCOMPLETE, text: '', uuid: uuidv1() })}
+                className='floatingButton'
+                onClick={() => props.addTodo({ status: INCOMPLETE, title: '', uuid: uuidv1() })}
             >
                 <AddIcon />
             </button>

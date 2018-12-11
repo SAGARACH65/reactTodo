@@ -1,8 +1,10 @@
 import '../../style.css';
-import axios from 'axios';
+import { login } from '../../utils/api';
 import React, { Component } from 'react';
 import Loading from '../../components/loading';
 import { storeToken, getToken } from '../../utils/tokenHandlers';
+import { SUCCESS, UNAUTHORIZED } from '../../constants/statusCodes';
+import { REFRESH_TOKEN, ACCESS_TOKEN } from '../../constants/todoConstants';
 
 class Login extends Component {
     constructor(props) {
@@ -16,30 +18,27 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        if (getToken('refreshToken')) {
+        if (getToken(REFRESH_TOKEN)) {
             this.props.history.push('/todos');
         }
     }
 
     async handleClick(event) {
-        console.log(this.state)
+
         this.setState({ isLoading: true })
         const { username, password } = this.state;
         try {
-            const response = await axios.post('http://localhost:8848/api/users/login', {
-                username,
-                password
-            });
+            const response = await login(username, password);
 
             const { status, message, refreshToken, accessToken } = response.data;
 
-            if (status === 401) {
+            if (status === UNAUTHORIZED) {
                 this.setState({ error: 'Wrong username or password', isLoading: false });
             }
 
-            if (status === 200) {
-                storeToken(refreshToken, 'refreshToken');
-                storeToken(accessToken, 'accessToken');
+            if (status === SUCCESS) {
+                storeToken(refreshToken, REFRESH_TOKEN);
+                storeToken(accessToken, ACCESS_TOKEN);
                 this.props.history.push('/todos');
             }
 
@@ -52,12 +51,12 @@ class Login extends Component {
         return (
             <div  >
                 <div>
-                    <p className="header">Login</p>
+                    <p className='header'>Login</p>
 
                     <div style={{ marginLeft: 850 }}>
 
                         <input
-                            type="text"
+                            type='text'
                             placeholder='Enter your Username'
                             onChange={event => this.setState({ username: event.target.value })}
                             border='none'
@@ -66,7 +65,7 @@ class Login extends Component {
                         <br />
 
                         <input
-                            type="password"
+                            type='password'
                             placeholder='Enter your Password'
                             onChange={event => this.setState({ password: event.target.value })}
                             border='none'
@@ -85,7 +84,7 @@ class Login extends Component {
 
                         <p className='error'>{this.state.error}</p>
 
-                        {(this.state.isLoading) && <Loading />}
+                        {(this.state.isLoading) && <Loading className='spinner' />}
                     </div>
                 </div>
             </div>
