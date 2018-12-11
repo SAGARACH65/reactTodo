@@ -3,11 +3,138 @@
     padding-top: 750px
 }
 
-.paper {
+.error {
+    color: red
+}
+
+.input-field {
+    width: 250px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid rgb(0, 188, 212)
+}
+
+.input-field:focus {
+    background-color: lightblue;
+}
+
+.header {
+    background-color: rgb(0, 188, 212);
+    color: white;
+    text-align: center;
+    margin-top: 0px;
+    height: 50px;
+    padding-top: 20px;
+    font-size: 20px;
+    font-weight: 1200
+}
+
+.submit-button {
+    border: none;
+    font-size: 14px;
+    border-radius: 8px;
+    padding: 12px 28px;
+    margin-left: 75px;
+    color: white;
+    background-color: rgb(0, 188, 212);
+}
+
+.submit-button:hover {
+    background-color: lightseagreen
+}
+
+.logout-button {
+    border: none;
+    font-size: 18px;
+    border-radius: 8px;
+    float: right;
+    margin-right: 100px;
+    color: white;
+    padding: 5px;
+    background-color: rgb(0, 188, 212);
+}
+
+.logout-button:hover {
+    border: 1px solid white
+}
+
+.input-todo {
+    width: 520px;
+    border: none;
+    border-bottom: 1px solid gray;
+}
+
+.input-todo:focus {
+    border-bottom: 1.5px solid rgb(0, 188, 212);
+}
+
+.todos-list {
     width: 700px;
     margin-left: 550px;
     position: relative;
 }
-.error{
-    color:red
+
+.container {
+    box-shadow: 10px 10px 8px 10px #888888;
 }
+
+.floatingButton {
+    width: 56px;
+    height: 56px;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+    border-radius: 50%;
+    background-color: #4352b4;
+    border: 0px;
+}
+
+.floatingButton:hover {
+    background-color: #303f9f;
+}
+
+.checkBox {
+    background-color: rgba(0, 0, 0, 0.54);
+    cursor: inherit;
+    height: 25px;
+    width: 25px;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    text-align: center;
+    background-color: red;
+    line-height: 16px;
+}
+
+.container input:checked~.checkmark {
+    background-color: red;
+}
+
+.icon-buttons {
+    background-color: white;
+    border: none
+}
+
+.icon-buttons:hover {
+    background-color: gray
+}
+
+.nav-buttons {
+    background-color: white;
+    border: none;
+    margin-left: 100px
+}
+
+
+
+.todo-container {
+    color: rgba(0, 0, 0, 0.87);
+    display: block;
+    font-size: 16px;
+    line-height: 16px;
+    position: relative;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    margin-left: 0px;
+    padding: 16px;
+}
+
+/* color: #f50057; */

@@ -1,19 +1,16 @@
 import '../../style.css';
-import axios from 'axios';
 import Todo from './todo';
 import AddTodo from './addtodo';
-import AppBar from 'material-ui/AppBar';
 import React, { Component } from "react";
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import Loading from '../../components/loading';
 import FooterNavigation from './footerNavigation';
-import { getToken, removeTokens } from '../../utils/tokenHandlers';
+import { removeTokens } from '../../utils/tokenHandlers';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
-const BASE_URL = 'http://localhost:8848/api';
+import { getAllTodos, postTodo, putTodo, deleteTodo } from '../../utils/api'
+import { ALL, ACTIVE, COMPLETED, COMPLETE, INCOMPLETE } from '../../constants/todoConstants'
 
 class Login extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -27,8 +24,7 @@ class Login extends Component {
     async componentDidMount() {
         this.setState({ isLoading: true });
         try {
-            const response = await axios.get(`${BASE_URL}/todos`, { 'headers': { 'access-token': getToken('accessToken') } });
-
+            const response = await getAllTodos();
             const { status, data } = response.data;
             if (status === 200) {
                 this.setState({ todos: data, isLoading: false });
@@ -39,7 +35,7 @@ class Login extends Component {
         }
     }
 
-    checkBoxClickHandler = async (id) => {
+    checkBoxClickHandler = (id) => {
         //update the local state
         const todos = this.state.todos;
         const currentIndex = todos.findIndex(todo => todo.uuid === id);
@@ -52,25 +48,21 @@ class Login extends Component {
 
         //sync to the server
         const { uuid, title } = this.state.todos[currentIndex];
-        axios.put(
-            `${BASE_URL}/todos`,
-            { uuid, title, status: currentStatus },
-            { 'headers': { 'access-token': getToken('accessToken') } }
-        );
+        putTodo(uuid, title, currentStatus)
 
     }
 
-    textBoxChangeHandler = async (uuid, title) => {
+    textBoxChangeHandler = (uuid, title) => {
         const todos = this.state.todos;
         const currentIndex = todos.findIndex(todo => todo.uuid === uuid);
         const modifiedTodo = { ...todos[currentIndex], title }
-
+console.log(modifiedTodo)
         this.setState(prevState => ({
             todos: [...prevState.todos.slice(0, currentIndex), modifiedTodo, ...prevState.todos.slice(currentIndex + 1)]
         }));
     }
 
-    deleteTodoHandler = async (uuid) => {
+    deleteTodoHandler = (uuid) => {
 
         //update the local state
 
@@ -82,10 +74,7 @@ class Login extends Component {
         }));
 
         //sync to the server
-        axios.delete(
-            `${BASE_URL}/todos/`,
-            { data: { uuid }, 'headers': { 'access-token': getToken('accessToken') } }
-        );
+        deleteTodo(uuid)
     }
 
 
@@ -94,21 +83,17 @@ class Login extends Component {
         this.props.history.push('/login');
     }
 
-    onSaveHandler = async (id) => {
+    onSaveHandler = (id) => {
         const todos = this.state.todos;
         const currentIndex = todos.findIndex(todo => todo.uuid === id);
 
         //API call
         const { uuid, title, status } = todos[currentIndex];
-        axios.post(
-            `${BASE_URL}/todos/`,
-            { uuid, title, status },
-            { 'headers': { 'access-token': getToken('accessToken') } }
-        );
 
+        postTodo(uuid, title, status)
     }
 
-    addTodo = async (todo) => {
+    addTodo = (todo) => {
         //update the local state
 
         const newTodos = [...this.state.todos, todo];
@@ -123,14 +108,14 @@ class Login extends Component {
         let todosToShow;
         const todos = this.state.todos.slice().reverse();
         switch (this.state.currentTab) {
-            case 'Show All':
+            case ALL:
                 todosToShow = todos;
                 break;
-            case 'Show Active':
-                todosToShow = todos.filter(todo => (todo.status === 'incomplete'));
+            case ACTIVE:
+                todosToShow = todos.filter(todo => (todo.status === INCOMPLETE));
                 break;
-            case 'Show Completed':
-                todosToShow = todos.filter(todo => (todo.status === 'complete'));
+            case COMPLETED:
+                todosToShow = todos.filter(todo => (todo.status === COMPLETE));
                 break;
             default:
                 todosToShow = todos;
@@ -139,21 +124,25 @@ class Login extends Component {
 
         return (
             <>
-                <MuiThemeProvider>
-                    <AppBar title="Todos">
-                        <Button style={{ color: '#fff' }} onClick={() => this.logoutHandler()}>Logout</Button>
-                    </AppBar>
-                </MuiThemeProvider>
+                <div className="header">
+                    <span>Todos</span>
+
+                    <button
+                        className="logout-button"
+                        onClick={() => this.logoutHandler()}>
+                        Logout
+                 </button>
+                </div>
+
                 {(this.state.isLoading)
                     ?
                     <Loading />
                     :
-                    < div >
+                    <div>
                         <p className="error">{this.state.error}</p>
-                        <MuiThemeProvider>
-                            <div>
-                                <Paper elevation={4} className="paper">
-
+                        < div className="todos-list">
+                            <div className="container">
+                                <MuiThemeProvider>
                                     {todosToShow.map(todo => (
                                         <Todo
                                             todo={todo}
@@ -163,14 +152,15 @@ class Login extends Component {
                                             onSaveHandler={this.onSaveHandler}
                                         />
                                     ))}
+                                </MuiThemeProvider>
 
-                                    <AddTodo addTodo={this.addTodo} />
-                                    <FooterNavigation currentTabHandler={this.changeCurrentTab} className="footer" />
-                                </Paper>
+                                <AddTodo addTodo={this.addTodo} />
+                                <FooterNavigation currentTabHandler={this.changeCurrentTab} className="footer" />
+
                             </div>
-                        </MuiThemeProvider>
 
-                    </div >
+                        </div >
+                    </div>
                 }
             </>
         );

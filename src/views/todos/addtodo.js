@@ -1,25 +1,24 @@
+import '../../style.css'
 import React from 'react'
 import uuidv1 from 'uuid/v1';
 import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
-import Button from '@material-ui/core/Button';
+import { INCOMPLETE } from '../../constants/todoConstants'
 
 export default function AddTodo(props) {
     return (
         <div style={{ marginLeft: 600 }}>
-            <Button
-                variant="fab"
-                color="primary"
-                aria-label="add"
-                onClick={() => props.addTodo({ status: 'incomplete', text: '', uuid: uuidv1() })}
+            <button
+                className="floatingButton"
+                onClick={() => props.addTodo({ status: INCOMPLETE, text: '', uuid: uuidv1() })}
             >
                 <AddIcon />
-            </Button>
+            </button>
         </div>
     )
 }
 
-AddTodo.propTypes={
-    addTodo:PropTypes.func.isRequired
+AddTodo.propTypes = {
+    addTodo: PropTypes.func.isRequired
 }
 

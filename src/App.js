@@ -1,14 +1,16 @@
-import React, { Component } from 'react';
 import './App.css';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from './views/login';
-// import Register from './views/register';
 import Todos from './views/todos';
+import history from './utils/history'
+import React, { Component } from 'react';
+import { createBrowserHistory } from 'history';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+// export const history = createBrowserHistory();
 
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter history={history}>
         <Switch>
           <Route path='/login' exact component={Login} />
           {/* <Route path='/register' component={Register} /> */}

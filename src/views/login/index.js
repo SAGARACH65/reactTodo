@@ -1,12 +1,8 @@
 import '../../style.css';
 import axios from 'axios';
-import AppBar from 'material-ui/AppBar';
-import React, { Component } from "react";
-import TextField from 'material-ui/TextField';
+import React, { Component } from 'react';
 import Loading from '../../components/loading';
-import RaisedButton from 'material-ui/RaisedButton';
 import { storeToken, getToken } from '../../utils/tokenHandlers';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class Login extends Component {
     constructor(props) {
@@ -25,7 +21,8 @@ class Login extends Component {
         }
     }
 
-    async  handleClick(event) {
+    async handleClick(event) {
+        console.log(this.state)
         this.setState({ isLoading: true })
         const { username, password } = this.state;
         try {
@@ -36,16 +33,14 @@ class Login extends Component {
 
             const { status, message, refreshToken, accessToken } = response.data;
 
+            if (status === 401) {
+                this.setState({ error: 'Wrong username or password', isLoading: false });
+            }
+
             if (status === 200) {
-                if (message === "invalid password") {
-                    this.setState({ error: 'Wrong username or password', isLoading: false });
-                } else {
-
-                    storeToken(refreshToken, 'refreshToken');
-                    storeToken(accessToken, 'accessToken');
-
-                    this.props.history.push('/todos');
-                }
+                storeToken(refreshToken, 'refreshToken');
+                storeToken(accessToken, 'accessToken');
+                this.props.history.push('/todos');
             }
 
         } catch (error) {
@@ -56,40 +51,46 @@ class Login extends Component {
     render() {
         return (
             <div  >
-                <MuiThemeProvider>
-                    <div>
-                        <AppBar
-                            title="Login"
+                <div>
+                    <p className="header">Login</p>
+
+                    <div style={{ marginLeft: 850 }}>
+
+                        <input
+                            type="text"
+                            placeholder='Enter your Username'
+                            onChange={event => this.setState({ username: event.target.value })}
+                            border='none'
+                            className='input-field'
                         />
-                        <div style={{ marginLeft: 800 }}>
+                        <br />
 
-                            <TextField
-                                hintText="Enter your Username"
-                                floatingLabelText="Username"
-                                onChange={(event, newValue) => this.setState({ username: newValue })}
-                            />
-                            <br />
+                        <input
+                            type="password"
+                            placeholder='Enter your Password'
+                            onChange={event => this.setState({ password: event.target.value })}
+                            border='none'
+                            className='input-field'
+                        />
 
-                            <TextField
-                                type="password"
-                                hintText="Enter your Password"
-                                floatingLabelText="Password"
-                                onChange={(event, newValue) => this.setState({ password: newValue })}
-                            />
-                            <br />
-                            <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)} />
+                        <br />
 
-                            <p className="error">{this.state.error}</p>
+                        <button
+                            label='Submit'
+                            className='submit-button'
+                            onClick={(event) => this.handleClick(event)}
+                        >
+                            SUBMIT
+                            </button>
 
-                            {(this.state.isLoading) && <Loading />}
-                        </div>
+                        <p className='error'>{this.state.error}</p>
+
+                        {(this.state.isLoading) && <Loading />}
                     </div>
-                </MuiThemeProvider>
+                </div>
             </div>
         );
     }
 }
-const style = {
-    marginLeft: 95,
-};
+
 export default Login;
